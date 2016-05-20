@@ -11,13 +11,15 @@ import CoreData
 
 class TaskListTableViewController: UITableViewController, ButtonTableViewCellDelegate, NSFetchedResultsControllerDelegate {
     
+    // MARK: - Properties
+    
     var task: Task?
     var dueDateValue: NSDate = NSDate()
     var dateTextField: UITextField!
     var nameText: String!
     var notesText: String?
     
-    @IBOutlet var datePickerSubview: UIDatePicker!
+    @IBOutlet weak var datePickerSubview: UIDatePicker!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +35,7 @@ class TaskListTableViewController: UITableViewController, ButtonTableViewCellDel
         if index == 0 {
             return "Complete"
         } else {
-            return "Inomplete"
+            return "Incomplete"
         }
     }
     
@@ -48,7 +50,7 @@ class TaskListTableViewController: UITableViewController, ButtonTableViewCellDel
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCellWithIdentifier("taskCell", forIndexPath: indexPath) as? ButtonTableViewCell,
-                let task = TaskController.sharedInstance.fetchedResultsController.objectAtIndexPath(indexPath) as? Task else { return UITableViewCell() }
+            let task = TaskController.sharedInstance.fetchedResultsController.objectAtIndexPath(indexPath) as? Task else { return UITableViewCell() }
         cell.updateWithTask(task)
         cell.delegate = self
         return cell
@@ -68,21 +70,14 @@ class TaskListTableViewController: UITableViewController, ButtonTableViewCellDel
         sender.updateButton(task.isIncomplete.boolValue)
     }
     
-    @IBAction func datePickerValueChanged(sender: UIDatePicker) {
-        self.dateTextField.text = sender.date.stringValue()
-        self.dueDateValue = datePickerSubview.date
-    }
-    
-    @IBAction func addTaskButtonTapped(sender: AnyObject) {
-        addTaskAlert()
-    }
-    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.task = (TaskController.sharedInstance.fetchedResultsController.objectAtIndexPath(indexPath) as! Task)
         self.nameText = task?.name
         self.notesText = task?.notes
         editTaskAlert()
     }
+    
+    // MARK: - Interface Methods
     
     func updateWithTask(task: Task) {
         let name = task.name
@@ -92,6 +87,17 @@ class TaskListTableViewController: UITableViewController, ButtonTableViewCellDel
         self.dateTextField.text = due?.stringValue()
         self.notesText = notes
     }
+    
+    @IBAction func datePickerValueChanged(sender: UIDatePicker) {
+        self.dateTextField.text = sender.date.stringValue()
+        self.dueDateValue = datePickerSubview.date
+    }
+    
+    @IBAction func addTaskButtonTapped(sender: AnyObject) {
+        addTaskAlert()
+    }
+    
+    // MARK: - Alert Actions
     
     func addTaskAlert() {
         let alertController = UIAlertController(title: "Add Task", message: "Add an item to be done", preferredStyle: .Alert)
@@ -138,7 +144,6 @@ class TaskListTableViewController: UITableViewController, ButtonTableViewCellDel
             self.nameText = taskNameTextFieldText
             self.notesText = taskNotesTextFieldtText
             TaskController.sharedInstance.updateTask(self.task!, name: taskNameTextFieldText, notes: taskNotesTextFieldtText, due: self.dueDateValue, isIncomplete: true)
-            self.tableView.reloadData()
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         alertController.addAction(saveAction)

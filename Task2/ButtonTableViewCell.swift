@@ -10,10 +10,14 @@ import UIKit
 
 class ButtonTableViewCell: UITableViewCell {
     
+    // MARK: - Properties
+    
     var delegate: ButtonTableViewCellDelegate?
     
     @IBOutlet weak var primaryLabel: UILabel!
     @IBOutlet weak var button: UIButton!
+    
+    // MARK: - Cell Functions
     
     @IBAction func buttonTapped(sender: AnyObject) {
         delegate?.buttonCellButtonTapped(self)

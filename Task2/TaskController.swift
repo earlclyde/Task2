@@ -11,6 +11,8 @@ import CoreData
 
 class TaskController {
     
+    // MARK: - Properties & Initialization
+    
     static var sharedInstance = TaskController()
     let fetchedResultsController: NSFetchedResultsController
     
@@ -23,6 +25,8 @@ class TaskController {
         self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: moc, sectionNameKeyPath: "isIncomplete", cacheName: nil)
         _ = try? fetchedResultsController.performFetch()
     }
+    
+    // MARK: - Controller Methods
     
     func addTask(name: String, notes: String?, due: NSDate?) {
         _ = Task(name: name, notes: notes, due: due)
